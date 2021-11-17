@@ -1,0 +1,156 @@
+/*
+ IMPORTANTE: No modificar el circuito, solo escribir el código para que el circuito
+funcione como es esperado.
+1)Al iniciar la simulación, todos los LED deben estar apagados.
+2)Al presionar el botón Random se deberá generar un número aleatorio entre 1 y 6.
+3)Los botones UP y DOWN deberán incrementar o decrementar respectivamente el
+valor actual del dado. Validar que el valor del dado no salga del rango (no sea
+superior a 6 ni inferior a 1).
+4)Opcional (Extra): Implementar una suerte de “animación” que representara el dado
+rebotando, dando números aleatorios hasta que se detenga finalmente en un
+número. Al presionar el botón random, el dado “mostrará” números aleatorios por
+una fracción de segundo (a elección, pero debe percibirse con el ojo humano) hasta
+detenerse en un número generado. Dicho de otra manera, será como si el dado
+rebotara hasta finalmente detenerse en un número.
+ */
+
+// https://www.tinkercad.com/things/7omd06CdtcB
+// GRUPO 6: Brañanova, Ezequiel; Gonzalez, Alfredo; Jimenez, Marcos; Jimenez, Rocio; Justo, Sonia
+
+#define BOTON_RANDOM 2
+#define BOTON_DOWN 3
+#define BOTON_UP 4
+
+void setup() 
+{
+  for(int i=5;i<=11;i++)
+  {
+    pinMode(i, OUTPUT);
+  }
+  for(int i=2;i<=4;i++)
+  {
+    pinMode(i, INPUT);
+  }
+}
+
+int estadoLed=LOW;
+int botonRandomAntes=LOW;
+int botonUpAntes=LOW;
+int botonDownAntes=LOW;
+
+void loop()
+{
+  Serial.begin(9600);
+  int numeroRandom;
+   
+  int estadoBotonRandom=BOTON_RANDOM;
+  int estadoBotonDown=BOTON_DOWN;
+  int estadoBotonUp=BOTON_UP;
+  
+  int botonRandomAhora=digitalRead(BOTON_RANDOM);
+  int botonDownAhora=digitalRead(BOTON_DOWN);
+  int botonUpAhora=digitalRead(BOTON_UP);
+  
+  if(botonRandomAhora==HIGH && botonRandomAntes==LOW)
+  {
+    digitalWrite(11, estadoLed);
+    digitalWrite(10, estadoLed);
+    digitalWrite(9, estadoLed);
+    digitalWrite(8, estadoLed);
+    digitalWrite(7, estadoLed);
+    digitalWrite(6, estadoLed);
+    digitalWrite(5, estadoLed);
+    
+    if(digitalRead(estadoBotonRandom)==HIGH)
+    {
+      numeroRandom=random(1,6);
+      Serial.println(numeroRandom);
+    }    
+  }
+  
+  if(botonDownAhora==HIGH && botonDownAntes==LOW && numeroRandom<=6 && numeroRandom>=1)
+  {    
+     numeroRandom=numeroRandom-1;
+     if(numeroRandom<1)
+     {
+       numeroRandom=1;
+     }    
+  }
+  if(botonUpAhora==HIGH && botonUpAntes==LOW && numeroRandom<=6 && numeroRandom>=1)
+  {
+    numeroRandom=numeroRandom+1;
+    if(numeroRandom>6)
+    {
+      numeroRandom=6;
+    }
+    
+  } 
+  control_numerosDelDado(numeroRandom);
+  
+  botonUpAntes=botonUpAhora; 
+  botonDownAntes=botonDownAhora;  
+  botonRandomAntes=botonRandomAhora;  
+  
+  delay(50); 
+
+}
+
+void control_numerosDelDado(int numero)
+{
+  switch(numero)
+  {
+    case 1:
+    digitalWrite(11, LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(8, HIGH);
+    digitalWrite(7, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(5, LOW);
+    break;
+    case 2:
+    digitalWrite(11, HIGH);
+    digitalWrite(10, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(8, LOW);
+    digitalWrite(7, HIGH);
+    digitalWrite(6, LOW);
+    digitalWrite(5, LOW);
+    break;
+    case 3:
+    digitalWrite(11, HIGH);
+    digitalWrite(10, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(8, HIGH);
+    digitalWrite(7, HIGH);
+    digitalWrite(6, LOW);
+    digitalWrite(5, LOW);    
+    break;
+    case 4:
+    digitalWrite(11, HIGH);
+    digitalWrite(9, HIGH);
+    digitalWrite(8, LOW);
+    digitalWrite(7, HIGH);
+    digitalWrite(6, LOW);
+    digitalWrite(5, HIGH);
+    break;
+    case 5:
+    digitalWrite(11, HIGH);
+    digitalWrite(10, LOW);
+    digitalWrite(9, HIGH);
+    digitalWrite(8, HIGH);
+    digitalWrite(7, HIGH);
+    digitalWrite(6, LOW);
+    digitalWrite(5, HIGH);
+    break;
+    case 6:
+    digitalWrite(11, HIGH);
+    digitalWrite(10, HIGH);
+    digitalWrite(9, HIGH);
+    digitalWrite(8, LOW);
+    digitalWrite(7, HIGH);
+    digitalWrite(6, HIGH);    
+    digitalWrite(5, HIGH);
+    break;
+  }
+}
